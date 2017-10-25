@@ -1,0 +1,39 @@
+version: "2.1"
+
+services:
+    db:
+        restart: always
+        build: ./postgres
+        image: youchendu/sieforum_db
+        ports:
+            - "5435:5432"
+    redis:
+        restart: always
+        build: ./redis
+        image: youchendu/sieforum_redis
+    web:
+        restart: always
+        build: ./web
+        image: youchendu/sieforum_web
+        command: uwsgi --ini /SIEForum_uwsgi.ini
+        links:
+            - db:db
+            - redis:redis
+        expose:
+            - "8000"
+        depends_on:
+            - db
+            - redis
+        volumes:
+            - ./web/SIEForum:/SIEForum
+            - /SIEForum/media
+    nginx:
+        restart: always
+        build: ./nginx
+        image: youchendu/sieforum_nginx
+        ports:
+            - "9010:8000"
+        links:
+            - web:web
+        volumes_from:
+            - web

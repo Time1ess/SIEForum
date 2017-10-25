@@ -1,0 +1,10 @@
+# this is example crontab configuration
+# you'll likely need to change it to use
+# valid python version or paths to manage.py
+
+*/10 * * * * cd /SIEForum && python manage.py buildactivepostersranking
+0 0 * * * cd /SIEForum && python manage.py prunecategories
+0 0 * * * cd /SIEForum && python manage.py clearattachments
+0 0 * * * cd /SIEForum && python manage.py clearreadtracker
+0 0 * * * cd /SIEForum && python manage.py clearsessions
+0 0 * * * cd /SIEForum && python manage.py invalidatebans
