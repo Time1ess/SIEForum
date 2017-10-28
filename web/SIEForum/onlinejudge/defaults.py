@@ -3,8 +3,8 @@
 from django.utils.translation import ugettext_lazy as _
 
 
-OJ_CATE_NAME = 'OJ发布区'
-OJ_SUB_CATE_NAME = 'OJ提交区'
+OJ_CATE_NAME = '在线评测区'
+OJ_SUB_CATE_NAME = '作业提交区'
 OJ_NOTE_SIGN_FIRST = '↓'
 OJ_NOTE_SIGN_SECOND = '↑'
 OJ_NOTE_SIGN_NUM = 37

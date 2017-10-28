@@ -15,7 +15,6 @@ services:
         restart: always
         build: ./web
         image: youchendu/sieforum_web
-        command: uwsgi --ini /SIEForum_uwsgi.ini
         links:
             - db:db
             - redis:redis

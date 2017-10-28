@@ -1,10 +1,9 @@
-# this is example crontab configuration
-# you'll likely need to change it to use
-# valid python version or paths to manage.py
+#!/bin/sh
 
-*/10 * * * * cd /SIEForum && python manage.py buildactivepostersranking
-0 0 * * * cd /SIEForum && python manage.py prunecategories
-0 0 * * * cd /SIEForum && python manage.py clearattachments
-0 0 * * * cd /SIEForum && python manage.py clearreadtracker
-0 0 * * * cd /SIEForum && python manage.py clearsessions
-0 0 * * * cd /SIEForum && python manage.py invalidatebans
+*/10 * * * * cd /SIEForum && /usr/local/bin/python manage.py buildactivepostersranking && echo "BUILD ACTIVE POSTERS RANKING" >> /cron.log
+0 * * * * cd /SIEForum && /usr/local/bin/python manage.py prunecategories && echo "PRUNE CATEGORIES" >> /cron.log
+0 */3 * * * cd /SIEForum && /usr/local/bin/python manage.py clearattachments && echo "CLEAR ATTACHMENTS" >> /cron.log
+0 * * * * cd /SIEForum && /usr/local/bin/python manage.py clearreadtracker && echo "CLEAR READ TRACKER" >> /cron.log
+0 */12 * * * cd /SIEForum && /usr/local/bin/python manage.py clearsessions && echo "CLEAR SESSIONS" >> /cron.log
+0 * * * * cd /SIEForum && /usr/local/bin/python manage.py invalidatebans && echo "INVALIDATE BANS" >> /cron.log
+*/2 * * * * cd /SIEForum && /usr/local/bin/python manage.py buildsolutionranking && echo "BUILD SOLUTION RANKING" >> /cron.log

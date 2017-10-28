@@ -32,7 +32,7 @@ def judge_wraps(func):
             solution = Solution.objects.get(id=sol_id)
             result = func(solution, *args, **kwargs)
         except Exception as e:
-            logging.error('Judgin failed:{}'.format(sol_id))
+            logging.error('Judgin failed:{}'.format(e))
             solution.status = SOL_ERROR
             result = -1
         else:
@@ -107,7 +107,7 @@ def run_judge(solution, subject_zip_path, module_name,
     zf.extractall()
 
     # Load target module
-    spec = import_util.spec_from_file_location("target", 'answer.py')
+    spec = import_util.spec_from_file_location("target", 'evaluate.py')
     target = import_util.module_from_spec(spec)
     spec.loader.exec_module(target)
 

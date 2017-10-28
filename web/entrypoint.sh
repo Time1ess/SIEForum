@@ -13,6 +13,6 @@ echo "Compiling messages"
 python manage.py compilemessages
 echo "Initializing crontab"
 /etc/init.d/cron start
-crontab -e cron.txt
+crontab cron.txt
 echo "Starting uwsgi"
 uwsgi --ini /SIEForum_uwsgi.ini
