@@ -26,34 +26,11 @@ logging = get_task_logger(__name__)
 def judge_wraps(func):
     @functools.wraps(func)
     def _wraps(self, thread_id, sol_id, *args, **kwargs):
-        start_time = time.time()
-        try:
-            logging.info('Judging started:{}'.format(sol_id))
-            solution = Solution.objects.get(id=sol_id)
-            result = func(solution, *args, **kwargs)
-        except Exception as e:
-            logging.error('Judgin failed:{}'.format(e))
-            solution.status = SOL_ERROR
-            result = -1
-        else:
-            logging.info('Judging succeed:{}'.format(sol_id))
-            solution.status = SOL_FINISHED
-        finally:
-            solution.save()
-            logging.info('Judging finished:{}'.format(sol_id))
-        # Reply thread about judgement details
-        duration = time.time() - start_time
         try:
             thread = Thread.objects.get(id=thread_id)
             poster = get_user_model().objects.get(username='ROBOT')
             now = timezone.now()
-            reply = settings.OJ_REPLY_FORMAT % {
-                'status': _('Error') if result < 0 else _('Succeed'),
-                'duration': duration,
-                'result': result,
-                'updated_on': timezone.localtime(now).strftime(
-                    _('%Y-%m-%d %H:%M:%S')),
-            }
+            reply = _('<h3>Status: Judging</h3>')
             post = Post.objects.filter(
                 category=thread.category,
                 thread=thread,
@@ -79,6 +56,38 @@ def judge_wraps(func):
             post.save()
         except Exception as e:
             logging.error('Posting error:{}'.format(e))
+        start_time = time.time()
+        try:
+            logging.info('Judging started:{}'.format(sol_id))
+            solution = Solution.objects.get(id=sol_id)
+            result = func(solution, *args, **kwargs)
+        except Exception as e:
+            logging.error('Judgin failed:{}'.format(e))
+            solution.status = SOL_ERROR
+            result = -1
+        else:
+            logging.info('Judging succeed:{}'.format(sol_id))
+            solution.status = SOL_FINISHED
+        finally:
+            solution.save()
+            logging.info('Judging finished:{}'.format(sol_id))
+        # Reply thread about judgement details
+        duration = time.time() - start_time
+        status = _('Error') if result < 0 else _('Succeed')
+        reply = settings.OJ_REPLY_FORMAT % {
+            'status': status,
+            'duration': duration,
+            'result': result,
+            'updated_on': timezone.localtime(now).strftime(
+                _('%Y-%m-%d %H:%M:%S')),
+        }
+        now = timezone.now()
+        post.updated_on = now
+        post.original = reply
+        post.parsed = reply
+        post.save()
+        update_post_checksum(post)
+        post.save()
         return result
     return _wraps
 

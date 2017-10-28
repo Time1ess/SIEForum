@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-28 14:18+0800\n"
+"POT-Creation-Date: 2017-10-29 09:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: mayne <dreama9ain@gmail.com>, 2017\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/misago/teams/65369/"
@@ -80,31 +80,35 @@ msgstr "对同一问题只允许提交一个解答"
 msgid "Must provide a attachment"
 msgstr "必须提供一个附件"
 
-#: onlinejudge/middleware.py:50
+#: onlinejudge/middleware.py:51
 msgid "Only one attachment required"
 msgstr "只允许上传一个附件"
 
-#: onlinejudge/middleware.py:53
+#: onlinejudge/middleware.py:54
 msgid "Only support ZIP file"
 msgstr "只支持.zip文件"
 
-#: onlinejudge/middleware.py:124
+#: onlinejudge/middleware.py:126
 msgid "Requires one SIEZIP file"
 msgstr "要求一个.SIEZIP后缀文件"
 
-#: onlinejudge/middleware.py:132
+#: onlinejudge/middleware.py:134
 msgid "Judge argument error"
 msgstr "评测参数设置错误"
 
-#: onlinejudge/tasks.py:51
+#: onlinejudge/tasks.py:33
+msgid "<h3>Status: Judging</h3>"
+msgstr "<h3>评测状态: 评测中</h3>"
+
+#: onlinejudge/tasks.py:76
 msgid "Error"
 msgstr "错误"
 
-#: onlinejudge/tasks.py:51
+#: onlinejudge/tasks.py:76
 msgid "Succeed"
 msgstr "成功"
 
-#: onlinejudge/tasks.py:55
+#: onlinejudge/tasks.py:82
 msgid "%Y-%m-%d %H:%M:%S"
 msgstr "%Y年%m月%d日 %H时%M分%S秒"
 
@@ -181,9 +185,6 @@ msgstr "学号"
 #: student/profilefields/student.py:15
 msgid "This is not a valid student ID"
 msgstr "这不是一个有效的学号。"
-
-#~ msgid "<h3>Status: {status:}!</h3>"
-#~ msgstr "<h3>评测状态: {status:}！</h3>"
 
 #~ msgid "<h3>Finished in {duration:.4f}s.</h3>"
 #~ msgstr "<h3>评测用时: {duration:.4f}秒。</h3>"
