@@ -21,6 +21,9 @@ services:
             - redis:redis
         expose:
             - "8000"
+        ports:
+            - "8001:8001"
+            - "8002:8002"
         depends_on:
             - db
             - redis
@@ -37,3 +40,9 @@ services:
             - web:web
         volumes_from:
             - web
+    worker:
+        restart: always
+        build: ./worker
+        image: youchendu/sieforum_worker
+        volumes_from:
+            - web:ro

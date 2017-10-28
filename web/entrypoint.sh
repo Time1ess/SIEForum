@@ -5,6 +5,8 @@ echo "Installing requirements"
 pip install -r requirements.txt
 echo "Collecting static files"
 python manage.py collectstatic -c --noinput
+echo "Make migrations"
+python manage.py makemigrations
 echo "Migrating databases"
 python manage.py migrate
 echo "Compiling messages"

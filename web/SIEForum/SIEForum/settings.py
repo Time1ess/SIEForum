@@ -97,7 +97,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-Hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -141,28 +141,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'theme', 'static'),
 ]
-
-
-# Email configuration
-# https://docs.djangoproject.com/en/1.11/ref/settings/#email-backend
-
-EMAIL_HOST = 'smtp.163.com'
-# EMAIL_PORT = 25
-# EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-
-# If either of these settings is empty, Django won't attempt authentication.
-
-EMAIL_HOST_USER = 'DUT_SIE@163.com'
-EMAIL_HOST_PASSWORD = 'D86hrxEYUc4'
-EMAIL_SUBJECT_PREFIX = '[DUT-SIE论坛]'
-EMAIL_USE_TLS = True
-
-
-# Default email address to use for various automated correspondence from the site manager(s).
-
-DEFAULT_FROM_EMAIL = 'Forums <%s>' % EMAIL_HOST_USER
 
 
 # Application definition
@@ -272,6 +250,7 @@ TEMPLATES = [
                 'misago.search.context_processors.search_providers',
                 'misago.users.context_processors.user_links',
                 'misago.legal.context_processors.legal_links',
+                'onlinejudge.context_processors.oj_links',
 
                 # Data preloaders
                 'misago.conf.context_processors.preload_settings_json',
@@ -290,9 +269,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SIEForum.wsgi.application'
 
-
 # Django Crispy Forms
-#http://django-crispy-forms.readthedocs.io/en/latest/install.html
+# http://django-crispy-forms.readthedocs.io/en/latest/install.html
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
@@ -392,7 +370,7 @@ MISAGO_USE_STOP_FORUM_SPAM = True
 MISAGO_POSTING_MIDDLEWARES = [
     # Always keep FloodProtectionMiddleware middleware first one
     'misago.threads.api.postingendpoint.floodprotection.FloodProtectionMiddleware',
-    
+
     'misago.threads.api.postingendpoint.category.CategoryMiddleware',
     'misago.threads.api.postingendpoint.privatethread.PrivateThreadMiddleware',
     'misago.threads.api.postingendpoint.reply.ReplyMiddleware',
@@ -408,29 +386,22 @@ MISAGO_POSTING_MIDDLEWARES = [
     'misago.threads.api.postingendpoint.mentions.MentionsMiddleware',
     'misago.threads.api.postingendpoint.subscribe.SubscribeMiddleware',
     'misago.threads.api.postingendpoint.syncprivatethreads.SyncPrivateThreadsMiddleware',
-    
+
+    'onlinejudge.middleware.OJSubmissionMiddleware',
+    'onlinejudge.middleware.OJReleaseMiddleware',
     # Always keep SaveChangesMiddleware middleware after all state-changing middlewares
     'misago.threads.api.postingendpoint.savechanges.SaveChangesMiddleware',
-    
+
     # Those middlewares are last because they don't change app state
     'misago.threads.api.postingendpoint.emailnotification.EmailNotificationMiddleware',
-    
-    'onlinejudge.middleware.OJMiddleware',
-]
-    
-OJ_CATE_NAME = 'OJ发布区'
-OJ_SUB_CATE_NAME = 'OJ提交区'
-OJ_UID_FORMAT = '<p>=====请复制以下加粗内容=====</p><h2>识别码:|{}|</h2><p>=====请复制以上加粗内容=====</p>'
-OJ_UID_PATTERN = r'识别码:\|(.*?)\|'
 
+]
 
 # Celery settings
-
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_TASK_SERIALIZER = 'json'
-

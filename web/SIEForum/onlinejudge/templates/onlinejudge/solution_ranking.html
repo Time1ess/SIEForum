@@ -1,0 +1,126 @@
+{% extends "misago/userslists/base.html" %}
+{% load i18n misago_avatars %}
+
+
+{% block title %}{% trans "Solution Ranking" %} | {{ block.super }}{% endblock %}
+
+
+{% block meta-description %}
+{% if users_count %}
+{% blocktrans trimmed with top=users_count total=participants %}
+Top {{ top }} in {{ total }} submitters.
+{% endblocktrans %}
+{% else %}
+{% trans 'No solutions for this problem currently.' %}
+{% endif %}
+{% endblock meta-description %}
+
+
+{% block og-title %}{% trans "Solution Ranking" %}{% endblock %}
+
+
+{% block og-description %}
+{% if users_count %}
+{% blocktrans trimmed with top=users_count total=participants %}
+Top {{ top }} in {{ total }} submitters.
+{% endblocktrans %}
+{% else %}
+{% trans 'No solutions for this problem currently.' %}
+{% endif %}
+{% endblock og-description %}
+
+
+{% block og-url %}{{ SITE_ADDRESS }}{{ REQUEST_PATH }}{% endblock %}
+
+
+{% block content %}
+{{ block.super }}
+
+<div class="active-posters-list">
+    <div class="container">
+        <div class="col-xs-3">
+        <a class="btn btn-default btn-block btn-icon btn-outline" title="{% trans 'Back' %}" href="{{ REFERER }}"><span class="material-icon">chevron_left</span></a>
+        </div>
+        {% if users_count %}
+        <p class="lead">
+        {% blocktrans trimmed with top=users_count total=participants %}
+        Top {{ top }} in {{ total }} submitters.
+        {% endblocktrans %}
+        </p>
+
+        <div class="active-posters ui-ready">
+            <ul class="list-group" itemscope itemtype="http://schema.org/ItemList">
+                {% for ranked in users %}
+                {% url 'misago:user' slug=ranked.slug pk=ranked.pk as user_url %}
+                <li class="list-group-item{% if ranked.rank.css_class %} list-group-rank-{{ ranked.rank.css_class }}{% endif %}" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <div class="rank-user-avatar">
+                        <a href="{{ user_url }}">
+                            <img src="{{ ranked|avatar:50 }}" alt="{% trans "Avatar" %}" class="avatar">
+                        </a>
+                    </div>
+
+                    <div class="rank-user">
+                        <div class="user-name">
+                            <a href="{{ user_url }}" class="item-title" itemprop="url">
+                                <span itemprop="name">{{ ranked }}</span>
+                            </a>
+                        </div>
+                        <div class="user-details">
+                            {% if ranked.rank.is_tab %}
+                            <a href="{% url 'misago:users-rank' slug=ranked.rank.slug %}" class="rank-name item-title">
+                                {{ ranked.rank.name }}
+                            </a>
+                            {% else %}
+                            <span class="rank-name item-title">
+                                {{ ranked.rank.name }}
+                            </span>
+                            {% endif %}
+                            {% if ranked.title %}
+                            <span class="user-title hidden-xs hidden-sm">
+                                {{ ranked.title }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="user-compact-stats visible-xs-block">
+                            <span class="rank-position">
+                                <small>{% trans "Rank" %}</small>
+                                <strong>#{{ forloop.counter }}</strong>
+                            </span>
+                            <span class="rank-posts-counted">
+                                <small>{% trans "Result" %}</small>
+                                <strong>{{ ranked.score }}</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="rank-position hidden-xs">
+                        <strong>#{{ forloop.counter }}</strong>
+                        <small>{% trans "Rank" %}</small>
+                    </div>
+
+                    <div class="rank-posts-counted hidden-xs">
+                        <strong>{{ ranked.score }}</strong>
+                        <small>{% trans "Result" %}</small>
+                    </div>
+
+                    <div class="rank-posts-total hidden-xs">
+                        <strong>{{ ranked.submissions }}</strong>
+                        <small>{% trans "Total submissions" %}</small>
+                    </div>
+
+                    <meta itemprop="position" content="{{ forloop.counter }}" />
+                </li>
+                {% endfor %}
+                <meta itemprop="numberOfItems" content="{{ users|length }}">
+                <meta itemprop="itemListOrder" content="http://schema.org/ItemListOrderDescending">
+            </ul>
+        </div>
+        {% else %}
+        <p class="lead">
+        {% trans 'No solutions for this problem currently.' %}
+        </p>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock content %}

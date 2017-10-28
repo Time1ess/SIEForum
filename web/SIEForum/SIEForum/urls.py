@@ -30,6 +30,7 @@ admin.site.login_form = AdminAuthenticationForm
 
 
 urlpatterns = [
+    url(r'^', include('onlinejudge.urls', namespace='oj')),
     url(r'^', include('misago.urls', namespace='misago')),
 
     # Javascript translations

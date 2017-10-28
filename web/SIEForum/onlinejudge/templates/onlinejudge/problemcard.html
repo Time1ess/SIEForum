@@ -1,0 +1,30 @@
+{% load i18n misago_avatars misago_shorthands %}
+<div class="panel user-card">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-3 user-card-left">
+                <div class="user-card-small-avatar">
+                </div>
+            </div>
+            <div class="col-xs-9 col-sm-12 user-card-body">
+                <div class="user-card-username">
+                    <a href="{{ problem.get_absolute_url }}" itemprop="url">
+                        <span itemprop="name">{{ problem }}</span>
+                    </a>
+                </div>
+                <div class="user-card-title">
+                    <a href="{{ problem.starter.get_absolute_url }}" itemprop="url">
+                        <span itemprop="name">{% trans 'Starter' %}:{{problem.starter}}</span>
+                    </a>
+                </div>
+                <div class="user-card-stats">
+                    <span itemprop="name">{% trans 'Participants' %}:{{problem.solutions}}</span>
+                    <a href="{% url 'oj:rankings' problem.uid %}/" itemprop="url">
+                        <span itemprop="name">{% trans 'View Rankings' %}</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,6 @@
 from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
-
-from .pages import oj
+from misago.users.pages import users_list
 
 
 class OnlineJudgeConfig(AppConfig):
@@ -10,12 +9,10 @@ class OnlineJudgeConfig(AppConfig):
     verbose_name = 'Online Judge'
 
     def ready(self):
-        self.register_online_judge_pages()
+        self.register_oj_pages()
 
-    def register_online_judge_pages(self):
-        oj.add_section(
-            link='oj:problems_list',
-            name=_('Problems'))
-        oj.add_section(
-            link='oj:solution_rank',
-            name=_('Rank'))
+    def register_oj_pages(self):
+        users_list.add_section(
+            link='oj:problems',
+            component='problems',
+            name=_('Online Judge'))
