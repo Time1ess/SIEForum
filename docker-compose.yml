@@ -7,10 +7,15 @@ services:
         image: youchendu/sieforum_db
         ports:
             - "5435:5432"
+        networks:
+            - blocked
+            - default
     redis:
         restart: always
         build: ./redis
         image: youchendu/sieforum_redis
+        networks:
+            - blocked
     web:
         restart: always
         build: ./web
@@ -29,6 +34,9 @@ services:
         volumes:
             - ./web/SIEForum:/SIEForum
             - /SIEForum/media
+        networks:
+            - default
+            - blocked
     nginx:
         restart: always
         build: ./nginx
@@ -39,9 +47,17 @@ services:
             - web:web
         volumes_from:
             - web
+        networks:
+            - default
     worker:
         restart: always
         build: ./worker
         image: youchendu/sieforum_worker
         volumes_from:
             - web:ro
+        networks:
+            - blocked
+
+networks:
+    blocked:
+        internal: true

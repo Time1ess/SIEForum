@@ -14,7 +14,7 @@ from django.contrib.auth import get_user_model
 from misago.threads.models import Thread, Post
 from misago.threads.checksums import update_post_checksum
 
-from . import SOL_ERROR, SOL_FINISHED, SOL_RUNNING
+from . import SOL_ERROR, SOL_FINISHED, SOL_RUNNING, LOW_SCORE_FIRST
 from . import judges
 from .conf import settings
 from .models import Solution
@@ -25,7 +25,7 @@ logging = get_task_logger(__name__)
 
 def judge_wraps(func):
     @functools.wraps(func)
-    def _wraps(self, sol_id, thread_id, *args, **kwargs):
+    def _wraps(self, thread_id, sol_id, *args, **kwargs):
         start_time = time.time()
         try:
             logging.info('Judging started:{}'.format(sol_id))
@@ -83,10 +83,10 @@ def judge_wraps(func):
     return _wraps
 
 
-@shared_task(bind=True, time_limit=60)
+@shared_task(bind=True, time_limit=settings.OJ_TIME_LIMITS)
 @judge_wraps
 def run_judge(solution, subject_zip_path, module_name,
-              target_zip_path, evaluate_fname,
+              target_zip_path, evaluate_fname, order_type,
               module_func='predict'):
     evaluate = getattr(judges, evaluate_fname)
     solution.status = SOL_RUNNING
@@ -119,5 +119,12 @@ def run_judge(solution, subject_zip_path, module_name,
     # Get output from target.INPUTS and compare with target.OUTPUTS
     output = getattr(subject, module_func)(*target.INPUTS)
     result = evaluate(output, *target.OUTPUTS)
-    solution.result = result
+    # Update with better results
+    if order_type == LOW_SCORE_FIRST:
+        if solution.result >= 0:
+            solution.result = min(solution.result, result)
+        else:
+            solution.result = result
+    else:
+        solution.result = max(solution.result, result)
     return result

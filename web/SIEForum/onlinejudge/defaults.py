@@ -32,3 +32,4 @@ OJ_ORDER_KEY = '排序方式'
 OJ_JUDGE_KEY = '评分类型'
 OJ_MODULE_KEY = '执行模块'
 OJ_DEFAULT_JUDGE = '默认值'
+OJ_TIME_LIMITS = 60

@@ -74,8 +74,9 @@ class OJSubmissionSerializer(serializers.Serializer):
                 break
         target_path = Attachment.objects.get(id=target_id).file
         target_path = osp.join(settings.MEDIA_ROOT, str(target_path))
-        run_judge.delay(solution.id, thread.id, self.subject_path,
-                        problem.module_name, target_path, problem.judge_name)
+        run_judge.delay(thread.id, solution.id, self.subject_path,
+                        problem.module_name, target_path, problem.judge_name,
+                        problem.order_type)
 
 
 class OJSubmissionMiddleware(PostingMiddleware):
@@ -166,15 +167,20 @@ class OJReleaseMiddleware(PostingMiddleware):
         )
 
     def use_this_middleware(self):
+        ids = self.request.data['attachments']
+        attachments = Attachment.objects.filter(id__in=ids)
+        sie_zips = [f for f in attachments if str(f.filetype) == 'SIEZIP']
+        if not sie_zips:
+            return False
         if self.mode == PostingEndpoint.EDIT:
-            is_sub_cate = str(self.post.category) == settings.OJ_CATE_NAME
+            is_rel_cate = str(self.post.category) == settings.OJ_CATE_NAME
         elif self.mode == PostingEndpoint.START:
             cate_id = self.request.data['category']
-            is_sub_cate = Category.objects.filter(
+            is_rel_cate = Category.objects.filter(
                 id=cate_id, name=settings.OJ_CATE_NAME).count() == 1
         else:
-            is_sub_cate = False
-        if is_sub_cate and self.post.is_first_post:
+            is_rel_cate = False
+        if is_rel_cate and self.post.is_first_post:
             return True
         return False
 
